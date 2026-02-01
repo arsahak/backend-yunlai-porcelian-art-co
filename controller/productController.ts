@@ -31,7 +31,21 @@ export const getProducts = async (req: AuthRequest, res: Response) => {
 
     // Filter by category
     if (category) {
-      query.category = { $regex: category, $options: "i" };
+      // Find category by slug first to get the correct title
+      const categoryDoc = await Category.findOne({ slug: category });
+      if (categoryDoc) {
+        query.category = categoryDoc.title;
+      } else {
+         // Fallback to regex search on category string in Product
+         query.category = { $regex: category, $options: "i" };
+      }
+    }
+
+    // Filter by badges
+    if (req.query.badges) {
+      const badgeFilter = req.query.badges as string;
+      // Support multiple badges? For now frontend sends one.
+      query.badges = badgeFilter;
     }
 
     // Filter by featured

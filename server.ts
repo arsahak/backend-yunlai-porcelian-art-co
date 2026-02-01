@@ -57,7 +57,7 @@ try {
 app.get("/", (_req: Request, res: Response) => {
   res.json({
     success: true,
-    message: "E-commerce Dashboard API is running!",
+    message: "Yunlai Porcelain Art Co. API is running!",
     version: "1.0.0",
     timestamp: new Date().toISOString(),
   });
@@ -81,7 +81,7 @@ app.get("/health", (_req: Request, res: Response) => {
 app.get("/api", (_req: Request, res: Response) => {
   res.json({
     success: true,
-    message: "Welcome to E-commerce Dashboard API",
+    message: "Welcome to Yunlai Porcelain Art Co. API",
     timestamp: new Date().toISOString(),
   });
 });
