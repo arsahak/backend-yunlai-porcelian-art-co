@@ -9,7 +9,6 @@ yarn.lock
 .env.production
 
 # Build output
-dist/
 build/
 
 # Logs
