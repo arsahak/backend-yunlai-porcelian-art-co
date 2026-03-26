@@ -179,9 +179,10 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
             url: imageUrl,
             isPrimary: images.length === 0,
           });
-          fs.unlinkSync(file.path);
+          // uploadToImgBB already deletes the original file internally — no cleanup needed here
         } catch (uploadError: any) {
           console.error("Image upload failed:", uploadError);
+          // Only attempt cleanup if the file still exists (uploadToImgBB may have already removed it)
           if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
           throw new Error(`Failed to upload image: ${uploadError.message}`);
         }
