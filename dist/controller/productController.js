@@ -149,10 +149,11 @@ const createProduct = async (req, res) => {
                         url: imageUrl,
                         isPrimary: images.length === 0,
                     });
-                    fs_1.default.unlinkSync(file.path);
+                    // uploadToImgBB already deletes the original file internally — no cleanup needed here
                 }
                 catch (uploadError) {
                     console.error("Image upload failed:", uploadError);
+                    // Only attempt cleanup if the file still exists (uploadToImgBB may have already removed it)
                     if (fs_1.default.existsSync(file.path))
                         fs_1.default.unlinkSync(file.path);
                     throw new Error(`Failed to upload image: ${uploadError.message}`);
