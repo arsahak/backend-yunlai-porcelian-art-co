@@ -102,10 +102,11 @@ const createBlog = async (req, res) => {
                 console.log(`Uploading featured image: ${req.file.path}`);
                 featuredImage = await (0, uploadToImgBB_1.uploadToImgBB)(req.file.path);
                 console.log(`Uploaded successfully: ${featuredImage}`);
-                fs_1.default.unlinkSync(req.file.path);
+                // uploadToImgBB already deletes the original file internally — no cleanup needed here
             }
             catch (uploadError) {
                 console.error("Image upload failed:", uploadError);
+                // Only attempt cleanup if the file still exists (uploadToImgBB may have already removed it)
                 if (fs_1.default.existsSync(req.file.path))
                     fs_1.default.unlinkSync(req.file.path);
                 throw new Error(`Failed to upload image: ${uploadError.message}`);
@@ -175,7 +176,7 @@ const updateBlog = async (req, res) => {
         if (req.file) {
             try {
                 featuredImage = await (0, uploadToImgBB_1.uploadToImgBB)(req.file.path);
-                fs_1.default.unlinkSync(req.file.path);
+                // uploadToImgBB already deletes the original file internally — no cleanup needed here
             }
             catch (uploadError) {
                 console.error("Image upload failed:", uploadError);
