@@ -26,8 +26,16 @@ jobs:
         run: |
           ssh ${{ secrets.DO_USERNAME }}@${{ secrets.DO_HOST }} << 'ENDSSH'
             set -e
-            export NVM_DIR="/root/.nvm"
-            source "$NVM_DIR/nvm.sh"
+
+            # Load NVM if available, otherwise use system Node
+            export NVM_DIR="$HOME/.nvm"
+            if [ -f "$NVM_DIR/nvm.sh" ]; then
+              source "$NVM_DIR/nvm.sh"
+            elif [ -f "/usr/local/nvm/nvm.sh" ]; then
+              source "/usr/local/nvm/nvm.sh"
+            else
+              export PATH="$PATH:/usr/local/bin:/usr/bin"
+            fi
 
             cd /var/www/backend-yunlai-porcelian-art-co
 
