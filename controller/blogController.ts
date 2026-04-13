@@ -137,10 +137,12 @@ export const createBlog = async (req: AuthRequest, res: Response) => {
 
     // Generate slug if not present
     if (!blogData.slug && blogData.title) {
-      blogData.slug = blogData.title
+      const baseSlug = blogData.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 100);
+      blogData.slug = `${baseSlug}-${Date.now()}`;
     }
 
     // Parse tags if it's a string

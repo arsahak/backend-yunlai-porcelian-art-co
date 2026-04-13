@@ -215,7 +215,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
             try {
               const imageUrl = await uploadToImgBB(file.path);
               variantImages.push(imageUrl);
-              fs.unlinkSync(file.path);
+              // uploadToImgBB already deletes the original file internally — no cleanup needed here
             } catch (uploadError: any) {
               console.error("Color variant image upload failed:", uploadError);
               if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
@@ -246,10 +246,12 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
 
     // Generate slug if not present
     if (!productData.slug && productData.name) {
-      productData.slug = productData.name
+      const baseSlug = productData.name
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 100); // max 100 chars to avoid oversized slugs
+      productData.slug = `${baseSlug}-${Date.now()}`;
     }
 
     // Parse numeric/boolean fields
@@ -350,7 +352,7 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
             url: imageUrl,
             isPrimary: false,
           });
-          fs.unlinkSync(file.path);
+          // uploadToImgBB already deletes the original file internally — no cleanup needed here
         } catch (uploadError: any) {
           console.error("Image upload failed:", uploadError);
           if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
@@ -409,7 +411,7 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
             try {
               const imageUrl = await uploadToImgBB(file.path);
               variantImages.push(imageUrl);
-              fs.unlinkSync(file.path);
+              // uploadToImgBB already deletes the original file internally — no cleanup needed here
             } catch (uploadError: any) {
               console.error("Color variant image upload failed:", uploadError);
               if (fs.existsSync(file.path)) fs.unlinkSync(file.path);

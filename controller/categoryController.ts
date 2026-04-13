@@ -149,10 +149,12 @@ export const createCategory = async (req: AuthRequest, res: Response) => {
 
     // Generate slug if not present
     if (!categoryData.slug && categoryData.title) {
-      categoryData.slug = categoryData.title
+      const baseSlug = categoryData.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 100);
+      categoryData.slug = `${baseSlug}-${Date.now()}`;
     }
 
     console.log("Saving category data:", categoryData);
