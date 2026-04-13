@@ -51,8 +51,8 @@ jobs:
             echo "📦 Installing production dependencies..."
             npm install --omit=dev
 
-            echo "♻️ Restarting PM2..."
-            pm2 restart yunlai-porcelian-art-co
+            echo "♻️ Reloading PM2..."
+            pm2 reload yunlai-porcelian-art-co --update-env
             pm2 save
 
             echo "✅ Deployment complete!"

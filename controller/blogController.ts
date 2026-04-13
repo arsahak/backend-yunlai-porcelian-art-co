@@ -154,6 +154,17 @@ export const createBlog = async (req: AuthRequest, res: Response) => {
         blogData.featured === "true" || blogData.featured === true;
     }
 
+    // Truncate SEO fields to model limits
+    if (blogData.metaTitle) {
+      blogData.metaTitle = blogData.metaTitle.slice(0, 60);
+    }
+    if (blogData.metaDescription) {
+      blogData.metaDescription = blogData.metaDescription.slice(0, 160);
+    }
+    if (blogData.excerpt) {
+      blogData.excerpt = blogData.excerpt.slice(0, 500);
+    }
+
     // Set publishedAt if status is published
     if (blogData.status === "published" && !blogData.publishedAt) {
       blogData.publishedAt = new Date();
@@ -211,6 +222,17 @@ export const updateBlog = async (req: AuthRequest, res: Response) => {
     }
 
     const updateData: any = { ...req.body, featuredImage };
+
+    // Truncate SEO fields to model limits
+    if (updateData.metaTitle) {
+      updateData.metaTitle = updateData.metaTitle.slice(0, 60);
+    }
+    if (updateData.metaDescription) {
+      updateData.metaDescription = updateData.metaDescription.slice(0, 160);
+    }
+    if (updateData.excerpt) {
+      updateData.excerpt = updateData.excerpt.slice(0, 500);
+    }
 
     // Parse tags if it's a string
     if (typeof updateData.tags === "string") {
