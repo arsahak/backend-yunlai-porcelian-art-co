@@ -133,7 +133,7 @@ export const createCategory = async (req: AuthRequest, res: Response) => {
         console.log(`Uploading category image: ${req.file.path}`);
         imageUrl = await uploadToImgBB(req.file.path);
         console.log(`Uploaded successfully: ${imageUrl}`);
-        fs.unlinkSync(req.file.path);
+        // uploadToImgBB already deletes the original file internally — no cleanup needed here
       } catch (uploadError: any) {
         console.error("Image upload failed:", uploadError);
         if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
@@ -199,7 +199,7 @@ export const updateCategory = async (req: AuthRequest, res: Response) => {
     if (req.file) {
       try {
         imageUrl = await uploadToImgBB(req.file.path);
-        fs.unlinkSync(req.file.path);
+        // uploadToImgBB already deletes the original file internally — no cleanup needed here
       } catch (uploadError: any) {
         console.error("Image upload failed:", uploadError);
         if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
