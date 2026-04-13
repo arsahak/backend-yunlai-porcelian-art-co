@@ -14,6 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install all dependencies
+        run: npm install
+
+      - name: Build TypeScript
+        run: npm run build
+
       - name: Setup SSH key file
         run: |
           mkdir -p ~/.ssh
@@ -21,9 +32,13 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DO_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Copy dist to server
+        run: |
+          scp -i ~/.ssh/deploy_key -r dist ${{ secrets.DO_USERNAME }}@${{ secrets.DO_HOST }}:/var/www/backend-yunlai-porcelian-art-co/
+
       - name: Deploy via SSH
         run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.DO_USERNAME }}@${{ secrets.DO_HOST }} << 'ENDSSH'
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DO_USERNAME }}@${{ secrets.DO_HOST }} << 'ENDSSH'
             set -e
             export NVM_DIR="/root/.nvm"
             source "$NVM_DIR/nvm.sh"
@@ -33,11 +48,8 @@ jobs:
             echo "📥 Pulling latest code..."
             git pull origin main
 
-            echo "📦 Installing dependencies..."
+            echo "📦 Installing production dependencies..."
             npm install --omit=dev
-
-            echo "🔨 Building TypeScript..."
-            npm run build
 
             echo "♻️ Restarting PM2..."
             pm2 restart yunlai-porcelian-art-co
