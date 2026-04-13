@@ -1,4 +1,4 @@
-# Create Super User Script
+# Create Super UserScript
 
 This script creates a super user (admin) with full access to all features in the coaching center application.
 
